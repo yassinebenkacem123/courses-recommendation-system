@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import Layout from "./components/layout/Layout"
 import MainForm from "./components/form/MainForm"
+import Courses from "./pages/Courses";
+
 function App() {
   const [hasSubmittedForm, setHasSubmittedForm] = useState(false)
 
@@ -30,6 +32,7 @@ function App() {
           path="form"
           element={<MainForm onSubmitted={() => setHasSubmittedForm(true)} />}
         />
+        <Route path="courses" element={<Courses/>}  />
       </Route>
     </Routes>
   )

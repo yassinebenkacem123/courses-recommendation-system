@@ -1,7 +1,7 @@
 import Logo from "./Logo"
 import { Link} from "react-router-dom";
 const NavBar = () => {
-    const links  = ["Home", "Courses", "About", "Contact"];
+    const links  = ["Home", "courses", "About", "Contact"];
   return (
     <div className="flex z-10 w-full justify-between items-center py-4">
       <Logo />

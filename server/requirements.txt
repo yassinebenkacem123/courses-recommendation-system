@@ -2,3 +2,6 @@ fastapi
 uvicorn[standard]
 motor
 python-dotenv
+pandas
+numpy
+scikit-learn

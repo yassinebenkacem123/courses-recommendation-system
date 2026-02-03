@@ -1,18 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import CoursCard from './CoursCard'
 import { FiArrowUpRight } from "react-icons/fi";
-import { fetchFeaturedCourses } from '../../../services/courseService'
+import { fetchFeaturedCourses, fetchRecommendedCourses } from '../../../services/courseService'
 
 const FeaturedCourses = () => {
     const [courses, setCourses] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [noExactMatch, setNoExactMatch] = useState(false)
 
     useEffect(() => {
         const loadCourses = async () => {
             try {
-                const coursesData = await fetchFeaturedCourses()
-                setCourses(coursesData)
+                let filters = null
+                if (typeof window !== 'undefined') {
+                    const stored = window.localStorage.getItem('courseFilters')
+                    if (stored) {
+                        try {
+                            filters = JSON.parse(stored)
+                        } catch {
+                            filters = null
+                        }
+                    }
+                }
+
+                const coursesData = filters
+                    ? await fetchRecommendedCourses(filters)
+                    : await fetchFeaturedCourses()
+
+                if (filters && (!coursesData || coursesData.length === 0)) {
+                    const fallbackCourses = await fetchFeaturedCourses()
+                    setCourses(fallbackCourses)
+                    setNoExactMatch(true)
+                } else {
+                    setCourses(coursesData)
+                    setNoExactMatch(false)
+                }
             } catch (err) {
                 console.error(err)
                 setError(err.message || 'Something went wrong while loading courses')
@@ -53,7 +76,20 @@ const FeaturedCourses = () => {
                 </div>
             )}
 
-            {!loading && !error && (
+            {!loading && !error && noExactMatch && courses.length > 0 && (
+                <div className='mt-6 text-base text-gray-500 text-center max-w-xl'>
+                    We couldn&apos;t find any courses that exactly match what you&apos;re looking for,
+                    so here are some popular courses you might like instead.
+                </div>
+            )}
+
+            {!loading && !error && courses.length === 0 && (
+                <div className='mt-10 text-lg text-gray-500 text-center max-w-xl'>
+                    We couldn&apos;t load any courses at the moment. Please try again later.
+                </div>
+            )}
+
+            {!loading && !error && courses.length > 0 && (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                     {courses.map((course) => (
                         <CoursCard

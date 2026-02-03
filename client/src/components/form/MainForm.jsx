@@ -11,10 +11,10 @@ const MainForm = ({ onSubmitted }) => {
   const hasSubmittedRef = useRef(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    reason: '',
-    careerLevel: '',
-    interestArea: '',
-    specificSkill: ''
+    category: '',
+    level: '',
+    topic: '',
+    pricePreference: '',
   });
 
   const nextStep = () => setStep((prev) => prev + 1);
@@ -26,28 +26,66 @@ const MainForm = ({ onSubmitted }) => {
 
   const renderStep = () => {
     switch (step) {
-      case 1: return <Form1 onSelect={(val) => updateData('reason', val)} />;
-      case 2: return <Form2 onSelect={(val) => updateData('careerLevel', val)} />;
-      case 3: return <Form3 onSelect={(val) => updateData('interestArea', val)} />;
-      case 4: return <Form4 onSelect={(val) => updateData('specificSkill', val)} />;
-      default: return null;
+      case 1:
+        return <Form1 onSelect={(val) => updateData('category', val)} />;
+      case 2:
+        return <Form2 onSelect={(val) => updateData('level', val)} />;
+      case 3:
+        return <Form3 onSelect={(val) => updateData('topic', val)} />;
+      case 4:
+        return <Form4 onSelect={(val) => updateData('pricePreference', val)} />;
+      default:
+        return null;
     }
   };
 
   useEffect(() => {
     if (step === 5 && !hasSubmittedRef.current) {
       hasSubmittedRef.current = true;
-      console.log('Onboarding form submitted with values:', formData);
+
+      const filters = {};
+
+      if (formData.category) {
+        filters.category = formData.category;
+      }
+      if (formData.level) {
+        if (formData.level !== 'Any level') {
+          filters.level = formData.level;
+        }
+      }
+      if (formData.topic) {
+        filters.topic = formData.topic;
+      }
+
+      if (formData.pricePreference) {
+        if (formData.pricePreference === 'Free only') {
+          filters.is_paid = 'False';
+          filters.max_price = 0;
+        } else if (formData.pricePreference === 'Paid – under $20') {
+          filters.is_paid = 'True';
+          filters.max_price = 20;
+        } else if (formData.pricePreference === 'Paid – under $50') {
+          filters.is_paid = 'True';
+          filters.max_price = 50;
+        }
+      }
+
+      console.log('Onboarding form submitted with filters:', filters);
+
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('hasSubmittedMainForm', 'true');
+        window.localStorage.setItem('courseFilters', JSON.stringify(filters));
       }
-      toast.success('Thank you for submitting the form!');
+
+      toast.success('Thank you! We are finding courses for you.');
+
       if (typeof onSubmitted === 'function') {
-        onSubmitted();
+        onSubmitted(filters);
       }
+
       navigate('/', { replace: true });
     }
-  }, [step, formData, navigate]);
+  }, [step, formData, navigate, onSubmitted]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4">
