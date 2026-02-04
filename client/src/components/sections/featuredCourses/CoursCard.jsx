@@ -1,4 +1,5 @@
 import { FaStar, FaRegClock } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const CoursCard = ({
   id,
@@ -12,10 +13,17 @@ const CoursCard = ({
   publicationDate,
   instructor,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       key={id}
-      className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md m-4 "
+      className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md m-4 cursor-pointer"
+      onClick={() => {
+        if (id) {
+          navigate(`/courses/${id}`);
+        }
+      }}
     >
       {/* Image Container */}
       <div className="relative aspect-video overflow-hidden">

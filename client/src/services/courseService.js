@@ -342,6 +342,16 @@ const transformCoursesWithImages = async (data) => {
             totalHours,
             publicationDate: course.published_time || course.last_update_date,
             instructor: course.instructor,
+
+            // Extra fields useful for detailed views
+            category: course.category,
+            subcategory: course.subcategory,
+            topic: course.topic,
+            language: course.language,
+            level: course.level,
+            isPaidRaw: course.is_paid,
+            numLectures: course.num_lectures,
+            numSubscribers: course.num_subscribers,
         });
     }
 
@@ -375,6 +385,32 @@ export const fetchModelRecommendations = async (filters = {}) => {
 
     if (!res.ok) {
         throw new Error('Failed to fetch recommended courses');
+    }
+
+    const data = await res.json();
+    return transformCoursesWithImages(data);
+};
+
+export const fetchCourseById = async (id) => {
+    const res = await fetch(`${API_BASE_URL}/courses/${id}`);
+
+    if (!res.ok) {
+        if (res.status === 404) {
+            throw new Error('Course not found');
+        }
+        throw new Error('Failed to fetch course details');
+    }
+
+    const data = await res.json();
+    const transformed = await transformCoursesWithImages([data]);
+    return transformed[0] || null;
+};
+
+export const fetchCourseRecommendationsById = async (id, limit = 6) => {
+    const res = await fetch(`${API_BASE_URL}/courses/${id}/recommendations?limit=${limit}`);
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch related courses');
     }
 
     const data = await res.json();

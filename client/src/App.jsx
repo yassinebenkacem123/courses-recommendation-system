@@ -4,6 +4,7 @@ import Home from "./pages/Home"
 import Layout from "./components/layout/Layout"
 import MainForm from "./components/form/MainForm"
 import Courses from "./pages/Courses";
+import CourseDetails from "./pages/CourseDetails";
 
 function App() {
   const [hasSubmittedForm, setHasSubmittedForm] = useState(false)
@@ -32,7 +33,8 @@ function App() {
           path="form"
           element={<MainForm onSubmitted={() => setHasSubmittedForm(true)} />}
         />
-        <Route path="courses" element={<Courses/>}  />
+        <Route path="courses" element={<Courses />} />
+        <Route path="courses/:id" element={<CourseDetails />} />
       </Route>
     </Routes>
   )
