@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
+# Le modèle Course
 class Course(BaseModel):
     mongo_id: Optional[str] = Field(default=None, alias="_id", description="MongoDB document ID as string")
     id: Optional[str] = None
@@ -29,6 +30,7 @@ class Course(BaseModel):
     description_clean: Optional[str] = None
 
 
+# Nettoyage des documents MongoDB
 def course_entity(document: dict) -> dict:
 
     if not document:

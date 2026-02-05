@@ -11,8 +11,10 @@ import pickle
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Création de l'application FastAPI
 app = FastAPI(title="Rassil Courses API", version="1.0.0")
 
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -22,6 +24,7 @@ app.add_middleware(
 )
 
 
+# Chargement du modèle de recommandation
 _RECOMMENDER_MODEL = None
 _RECOMMENDER_IDS = None
 _RECOMMENDER_INDEX = None
@@ -32,6 +35,7 @@ def _load_recommender_model() -> None:
     if _RECOMMENDER_MODEL is not None and _RECOMMENDER_IDS is not None and _RECOMMENDER_INDEX is not None:
         return
 
+    # Load the model from a pickle file
     model_path = Path(__file__).parent / "course_recommender.pkl"
     if not model_path.exists():
         return
@@ -53,12 +57,13 @@ def _load_recommender_model() -> None:
 
 _load_recommender_model()
 
-
+# Endpoints API
 @app.get("/test")
 async def health_check():
     return {"message": "FastAPI server is running"}
 
 
+# Get courses with optional filters
 @app.get("/courses", response_model=List[Course])
 async def get_courses(
     category: Optional[str] = Query(default=None, description="Filter by course category (case-insensitive, partial)"),
@@ -113,6 +118,7 @@ async def get_courses(
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
 
+# Get course by ID
 @app.get("/courses/{course_id}", response_model=Course)
 async def get_course_by_id(
     course_id: str = ApiPath(..., description="Course identifier as stored in the database"),
@@ -129,6 +135,7 @@ async def get_course_by_id(
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
 
+# Recommendations 
 @app.get("/recommendations", response_model=List[Course])
 async def get_recommendations(
     q: Optional[str] = Query(default=None, description="Free-text search query"),

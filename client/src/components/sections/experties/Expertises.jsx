@@ -2,31 +2,32 @@ import ExpertieCard from "./ExpertieCard"
 import { motion } from "framer-motion"
 const Expertises = () => {
   const experties = [
+
     {
-      name: "Meryam Kada",
-      role: "AI Specialist",
-      picture: "",
-    },
-    {
-      name: "Aya ...",
-      role: "Data Scientist",
-      picture: "",
-    },
-    {
-      name: "Chahd ...",
+      name: "Chahd ",
       role: "Machine Learning Engineer",
-      picture: "",
+      picture: "/experties/chahd.jpeg",
     },
     {
-      name: "Anass ...",
+      name: "Anass hadioui",
       role: "Full Stack Developer",
-      picture: "",
+      picture: "/experties/anass.jpeg",
     },
     {
       name: "Yassine Ben Kacem",
       role: "Full Stack Developer",
-      picture: "/experties/yassine.jfif",
-    }
+      picture: "/experties/yassine.jpeg",
+    },
+        {
+      name: "Meryam Kada",
+      role: "AI Specialist",
+      picture: "https://placehold.co/600x400/png?q=80&bg=gray&text=Meryam+Kada",
+    },
+    {
+      name: "Aya jabouri",
+      role: "Data Scientist",
+      picture: "https://placehold.co/600x400/png?q=80&bg=gray&text=Aya+jabouri",
+    },
   ]
   return (
     <section className='h-screen p-10 px-15'>
